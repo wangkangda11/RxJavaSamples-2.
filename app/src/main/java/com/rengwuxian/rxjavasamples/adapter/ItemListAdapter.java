@@ -10,8 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.rengwuxian.rxjavasamples.R;
 import com.rengwuxian.rxjavasamples.model.Item;
+import com.rengwuxian.rxjavasamples.xcimageloader.XCImageLoader;
 
 import java.util.List;
 
@@ -20,6 +22,7 @@ import butterknife.ButterKnife;
 
 public class ItemListAdapter extends RecyclerView.Adapter {
     List<Item> images;
+    private XCImageLoader mImageLoader;
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -31,7 +34,9 @@ public class ItemListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         DebounceViewHolder debounceViewHolder = (DebounceViewHolder) holder;
         Item image = images.get(position);
-        Glide.with(holder.itemView.getContext()).load(image.imageUrl).into(debounceViewHolder.imageIv);
+        mImageLoader = XCImageLoader.getInstance(3, XCImageLoader.Type.LIFO);
+        mImageLoader.displayImage(image.imageUrl, debounceViewHolder.imageIv, true);
+//        Glide.with(holder.itemView.getContext()).load(image.imageUrl).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(debounceViewHolder.imageIv);
         debounceViewHolder.descriptionTv.setText(image.description);
     }
 
